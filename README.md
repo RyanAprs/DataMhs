@@ -1,6 +1,18 @@
 # Aplikasi Pengelolaan Data Mahasiswa
-Project latihan **Asesmen Kompetensi BNSP — Bidang Pengembangan Software**.
-Satu project ini dirancang untuk menjadi bukti **9 unit kompetensi** sekaligus.
+
+Aplikasi berbasis **console (Java)** untuk mengelola data mahasiswa beserta nilainya.
+Program ini membantu staf/admin akademik **mencatat, mencari, memperbarui, dan menghapus** data
+mahasiswa, serta **merekap nilai per mata kuliah** — semuanya tersimpan permanen di database.
+
+**Apa yang bisa dilakukan:**
+- Menambah, menampilkan, mengubah, menghapus data mahasiswa (CRUD).
+- Mencari mahasiswa berdasarkan nama atau NIM.
+- Mencatat nilai mata kuliah tiap mahasiswa dan menampilkannya (relasi antar tabel).
+- Memvalidasi input otomatis (NIM, email, IPK) agar data tetap konsisten.
+
+> Selain sebagai aplikasi yang berfungsi nyata, project ini juga sengaja disusun rapi sebagai
+> **bahan Asesmen Kompetensi BNSP — Pengembangan Software**, sehingga satu project ini dapat
+> menjadi bukti untuk **9 unit kompetensi** sekaligus (lihat peta unit di bagian 5).
 
 ---
 
