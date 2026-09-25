@@ -60,44 +60,102 @@ ID + data baru → Validasi → UPDATE             → Status berhasil/gagal
 - **Use case:** Tambah Data, Lihat Data, Ubah Data, Hapus Data, Cari Data, Urutkan, Export/Import File.
 
 ## 7. Class Diagram (Unit 1 — KUK 2.2: diagram objek)
-Menggambarkan kelas, atribut, method, dan relasinya (inheritance, implements, dependency).
-```
+Ditulis dengan notasi **UML (Mermaid)** — otomatis ter-render sebagai diagram di GitHub/VS Code.
+Simbol relasi: `<|--` inheritance/implements, `-->` dependency (memakai), `"1" --> "*"` multiplicity.
+
+```mermaid
+classDiagram
+    direction TB
+
+    class Person {
         <<abstract>>
-          Person
-   ─────────────────────
-   - nama : String
-   - email : String
-   ─────────────────────
-   + getRole() : String   <<abstract>>
-   + getNama() / setNama()
-   + getEmail() / setEmail()
-          ▲  (extends / inheritance)
-          │
-       Mahasiswa
-   ─────────────────────
-   - id : int
-   - nim : String
-   - jurusan : String
-   - ipk : double
-   ─────────────────────
-   + getRole() : String   (override → polymorphism)
-   + toRow() : String
+        -String nama
+        -String email
+        +getRole() String*
+        +getNama() String
+        +setNama(String)
+        +getEmail() String
+        +setEmail(String)
+    }
 
-   <<interface>>
-   CrudRepository<T>
-   ─────────────────────
-   + insert(T)          + findById(int) : T
-   + findAll() : List   + update(T) : boolean
-   + delete(int) : boolean
-          ▲  (implements)
-          │
-     MahasiswaDAO ───uses──▶ DatabaseConnection
-          ▲
-          │ (dipakai)
-   MahasiswaService ───validasi──▶ InputValidator
+    class Mahasiswa {
+        -int id
+        -String nim
+        -String jurusan
+        -double ipk
+        +getRole() String
+        +toRow() String
+    }
 
-   App ──▶ MahasiswaService, NilaiDAO, CsvFileManager, MahasiswaSorter
+    class CrudRepository~T~ {
+        <<interface>>
+        +insert(T)
+        +findAll() List~T~
+        +findById(int) T
+        +update(T) boolean
+        +delete(int) boolean
+    }
+
+    class MahasiswaDAO {
+        +insert(Mahasiswa)
+        +findAll() List~Mahasiswa~
+        +findById(int) Mahasiswa
+        +search(String) List~Mahasiswa~
+        +update(Mahasiswa) boolean
+        +delete(int) boolean
+    }
+
+    class MahasiswaService {
+        -MahasiswaDAO dao
+        +validate(Mahasiswa) String
+        +tambah(Mahasiswa)
+        +ubah(Mahasiswa) boolean
+        +hapus(int) boolean
+    }
+
+    class InputValidator {
+        <<utility>>
+        +isNimValid(String)$ boolean
+        +isEmailValid(String)$ boolean
+        +isIpkValid(double)$ boolean
+    }
+
+    class DatabaseConnection {
+        <<utility>>
+        +getConnection() Connection$
+        +initSchema()$
+    }
+
+    class App {
+        <<entry point>>
+        +main(String[])$
+    }
+
+    Person <|-- Mahasiswa : extends (inheritance)
+    CrudRepository <|.. MahasiswaDAO : implements
+    MahasiswaService --> MahasiswaDAO : delegasi CRUD
+    MahasiswaService --> InputValidator : validasi
+    MahasiswaDAO --> DatabaseConnection : buka koneksi
+    App --> MahasiswaService : memakai
+    MahasiswaService "1" --> "*" Mahasiswa : mengelola
 ```
+
+> Catatan polymorphism: `getRole()` bertanda `*` (abstract) di `Person` dan di-*override* di `Mahasiswa`.
+> Tanda `$` pada method = `static`. `~T~` = generic type parameter.
+
+<details>
+<summary>Versi teks (bila Mermaid tidak ter-render)</summary>
+
+```
+Person «abstract»            CrudRepository<T> «interface»
+   ▲ extends                        ▲ implements
+Mahasiswa                       MahasiswaDAO ──▶ DatabaseConnection
+                                     ▲ delegasi
+App ──▶ MahasiswaService ──▶ InputValidator
+              │ mengelola 1..*
+              └──▶ Mahasiswa
+```
+</details>
 
 ## 8. Component Diagram (Unit 1 — KUK 2.2: diagram komponen)
 Menggambarkan komponen/lapisan sistem dan ketergantungan antar-komponennya.
