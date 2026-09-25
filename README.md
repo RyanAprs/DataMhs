@@ -40,10 +40,14 @@ DataMahasiswa/
     │   ├── App.java            # menu console (INPUT→PROCESS→OUTPUT)
     │   ├── model/Person.java   # abstract (abstraction, inheritance)
     │   ├── model/Mahasiswa.java# entitas (encapsulation, polymorphism)
-    │   ├── db/DatabaseConnection.java  # koneksi & skema (Unit 6)
-    │   ├── dao/MahasiswaDAO.java       # CRUD (Unit 6)
+    │   ├── db/DatabaseConnection.java  # koneksi & skema + index (Unit 6)
+    │   ├── dao/CrudRepository.java     # interface kontrak CRUD (Unit 4)
+    │   ├── dao/MahasiswaDAO.java       # CRUD, implements CrudRepository (Unit 6)
     │   ├── service/MahasiswaService.java # validasi/business logic
-    │   └── util/InputValidator.java    # validasi reusable (Unit 2)
+    │   └── util/
+    │       ├── InputValidator.java     # validasi reusable (Unit 2)
+    │       ├── MahasiswaSorter.java    # array + sorting (Unit 3)
+    │       └── CsvFileManager.java     # baca/tulis file CSV (Unit 3)
     └── test/java/com/latihan/datamahasiswa/
         └── MahasiswaServiceTest.java   # unit test (Unit 9)
 ```
@@ -79,6 +83,9 @@ Setelah aplikasi jalan, akan muncul menu:
 5. Cari data (nama / NIM)
 6. Tambah nilai mahasiswa
 7. Lihat nilai mahasiswa (JOIN)
+8. Urutkan mahasiswa by IPK (array + sorting)
+9. Export data ke file CSV
+10. Import data dari file CSV
 0. Keluar
 ```
 > Menu 6 & 7 mendemonstrasikan **relasi antar tabel** (foreign key), **JOIN**, dan **cascade delete** — saat mahasiswa dihapus, seluruh nilainya ikut terhapus otomatis.
@@ -87,15 +94,15 @@ Ketik angka menu lalu ikuti perintah input. Database dibuat otomatis saat pertam
 ## 5. Peta 9 Unit Kompetensi → Bukti di Project
 | Unit | Kompetensi | Bukti di project |
 |------|-----------|------------------|
-| 1 | Spesifikasi Program | `docs/01_Spesifikasi.md` |
+| 1 | Spesifikasi Program | `docs/01_Spesifikasi.md` (requirement, IPO, flowchart, **class & component diagram**) |
 | 2 | Guidelines & Best Practices | penamaan bermakna, berlapis, `InputValidator`, PreparedStatement, DRY |
-| 3 | Pemrograman Terstruktur | `App.java` (menu, loop, switch), validasi kondisional |
-| 4 | Pemrograman Berorientasi Objek | `Person` (abstract) → `Mahasiswa` (inheritance, encapsulation, polymorphism) |
+| 3 | Pemrograman Terstruktur | `App.java` (menu, loop, switch); **array + sorting** (`MahasiswaSorter`); **baca/tulis file** (`CsvFileManager`) |
+| 4 | Pemrograman Berorientasi Objek | `Person` (abstract) → `Mahasiswa` (inheritance, encapsulation, polymorphism); **interface** `CrudRepository`; package |
 | 5 | Library / Pre-Existing | dependency `sqlite-jdbc` & JUnit di `pom.xml` |
-| 6 | Akses Basis Data | `DatabaseConnection`, `MahasiswaDAO` (CRUD), `database.sql` |
-| 7 | Dokumen Kode Program | `README.md` + komentar Javadoc di tiap kelas |
+| 6 | Akses Basis Data | `DatabaseConnection`, `MahasiswaDAO` (CRUD), **index**, `database.sql` |
+| 7 | Dokumen Kode Program | `README.md` + Javadoc di tiap kelas + **generate**: `mvn javadoc:javadoc` |
 | 8 | Debugging | `docs/05_Debugging.md` |
-| 9 | Pengujian Unit Program | `MahasiswaServiceTest.java` + `docs/06_Testing.md` |
+| 9 | Pengujian Unit Program | `MahasiswaServiceTest`, `MahasiswaSorterTest` + `docs/06_Testing.md` |
 
 ## 6. Catatan untuk Asesmen
 Saat demo, siapkan jawaban untuk: *apa yang dibuat, bagaimana caranya, dan mengapa memilih cara tersebut.*

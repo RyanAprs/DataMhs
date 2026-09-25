@@ -24,6 +24,9 @@ CREATE TABLE IF NOT EXISTS nilai (
     FOREIGN KEY (mahasiswa_id) REFERENCES mahasiswa(id) ON DELETE CASCADE
 );
 
+-- Indeks (KUK 1.3): mempercepat pencarian mahasiswa berdasarkan nama.
+CREATE INDEX IF NOT EXISTS idx_mahasiswa_nama ON mahasiswa(nama);
+
 -- Data awal (seed) untuk demo
 INSERT INTO mahasiswa (nim, nama, jurusan, email, ipk) VALUES
     ('2021001', 'Budi Santoso',  'Informatika',      'budi@kampus.ac.id',  3.55),

@@ -17,12 +17,14 @@ import java.util.List;
  * Unit 6 (Akses Basis Data): CRUD lengkap -> Create, Read, Update, Delete + pencarian.
  * Unit 2 (Best Practices)  : memakai PreparedStatement (mencegah SQL injection),
  *                            try-with-resources (mencegah kebocoran koneksi).
+ * Unit 4 (OOP) — KUK 4.1   : mengimplementasikan interface {@link CrudRepository}.
  *
  * Pola DAO memisahkan logika akses database dari logika bisnis (service) dan tampilan (App).
  */
-public class MahasiswaDAO {
+public class MahasiswaDAO implements CrudRepository<Mahasiswa> {
 
     /** CREATE */
+    @Override
     public void insert(Mahasiswa m) throws SQLException {
         String sql = "INSERT INTO mahasiswa(nim, nama, jurusan, email, ipk) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -43,6 +45,7 @@ public class MahasiswaDAO {
     }
 
     /** READ - semua data */
+    @Override
     public List<Mahasiswa> findAll() throws SQLException {
         String sql = "SELECT * FROM mahasiswa ORDER BY id";
         List<Mahasiswa> hasil = new ArrayList<>();
@@ -57,6 +60,7 @@ public class MahasiswaDAO {
     }
 
     /** READ - satu data berdasarkan id */
+    @Override
     public Mahasiswa findById(int id) throws SQLException {
         String sql = "SELECT * FROM mahasiswa WHERE id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -87,6 +91,7 @@ public class MahasiswaDAO {
     }
 
     /** UPDATE */
+    @Override
     public boolean update(Mahasiswa m) throws SQLException {
         String sql = "UPDATE mahasiswa SET nim=?, nama=?, jurusan=?, email=?, ipk=? WHERE id=?";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -102,6 +107,7 @@ public class MahasiswaDAO {
     }
 
     /** DELETE */
+    @Override
     public boolean delete(int id) throws SQLException {
         String sql = "DELETE FROM mahasiswa WHERE id = ?";
         try (Connection conn = DatabaseConnection.getConnection();

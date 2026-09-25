@@ -55,10 +55,13 @@ public class DatabaseConnection {
                     FOREIGN KEY (mahasiswa_id) REFERENCES mahasiswa(id) ON DELETE CASCADE
                 );
                 """;
+        // Unit 6 (KUK 1.3): indeks eksplisit untuk mempercepat pencarian by nama.
+        String sqlIndex = "CREATE INDEX IF NOT EXISTS idx_mahasiswa_nama ON mahasiswa(nama)";
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement()) {
             stmt.execute(sqlMahasiswa);
             stmt.execute(sqlNilai);
+            stmt.execute(sqlIndex);
         } catch (SQLException e) {
             // Unit 8 (Debugging): pesan error dibuat informatif agar mudah ditelusuri.
             throw new RuntimeException("Gagal inisialisasi database: " + e.getMessage(), e);

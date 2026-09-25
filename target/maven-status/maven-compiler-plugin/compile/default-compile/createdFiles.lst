@@ -3,7 +3,10 @@ com/latihan/datamahasiswa/util/InputValidator.class
 com/latihan/datamahasiswa/model/Person.class
 com/latihan/datamahasiswa/dao/NilaiDAO.class
 com/latihan/datamahasiswa/model/Nilai.class
+com/latihan/datamahasiswa/util/MahasiswaSorter.class
 com/latihan/datamahasiswa/dao/MahasiswaDAO.class
 com/latihan/datamahasiswa/service/MahasiswaService.class
 com/latihan/datamahasiswa/App.class
+com/latihan/datamahasiswa/dao/CrudRepository.class
+com/latihan/datamahasiswa/util/CsvFileManager.class
 com/latihan/datamahasiswa/db/DatabaseConnection.class

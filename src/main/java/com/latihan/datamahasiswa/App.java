@@ -5,6 +5,8 @@ import com.latihan.datamahasiswa.db.DatabaseConnection;
 import com.latihan.datamahasiswa.model.Mahasiswa;
 import com.latihan.datamahasiswa.model.Nilai;
 import com.latihan.datamahasiswa.service.MahasiswaService;
+import com.latihan.datamahasiswa.util.CsvFileManager;
+import com.latihan.datamahasiswa.util.MahasiswaSorter;
 
 import java.util.List;
 import java.util.Scanner;
@@ -37,6 +39,9 @@ public class App {
                 case "5" -> cariData();
                 case "6" -> tambahNilai();
                 case "7" -> lihatNilai();
+                case "8" -> urutkanByIpk();
+                case "9" -> exportCsv();
+                case "10" -> importCsv();
                 case "0" -> jalan = false;
                 default -> System.out.println("Pilihan tidak dikenal. Coba lagi.");
             }
@@ -54,6 +59,9 @@ public class App {
                 5. Cari data (nama / NIM)
                 6. Tambah nilai mahasiswa
                 7. Lihat nilai mahasiswa (JOIN)
+                8. Urutkan mahasiswa by IPK (array + sorting)
+                9. Export data ke file CSV
+                10. Import data dari file CSV
                 0. Keluar
                 --------------------------------------""");
         System.out.print("Pilih menu: ");
@@ -177,6 +185,68 @@ public class App {
             System.out.println("Total: " + daftar.size() + " nilai");
         } catch (Exception e) {
             System.out.println("Gagal memuat nilai: " + e.getMessage());
+        }
+    }
+
+    /** Menu 8 — Unit 3 (array + sorting): urutkan mahasiswa by IPK tertinggi. */
+    private static void urutkanByIpk() {
+        try {
+            List<Mahasiswa> daftar = service.semua();
+            if (daftar.isEmpty()) {
+                System.out.println("(tidak ada data untuk diurutkan)");
+                return;
+            }
+            // Konversi List -> array, lalu urutkan dengan algoritma selection sort.
+            Mahasiswa[] terurut = MahasiswaSorter.urutkanDariList(daftar);
+            System.out.println("Data terurut berdasarkan IPK (tertinggi -> terendah):");
+            System.out.printf("%-4s %-12s %-22s %-18s %-24s %s%n",
+                    "ID", "NIM", "NAMA", "JURUSAN", "EMAIL", "IPK");
+            System.out.println("-".repeat(90));
+            for (Mahasiswa m : terurut) {              // KUK 4.3: iterasi sepanjang array
+                System.out.println(m.toRow());
+            }
+            System.out.println("Total: " + terurut.length + " data (panjang array)");
+        } catch (Exception e) {
+            System.out.println("Gagal mengurutkan data: " + e.getMessage());
+        }
+    }
+
+    /** Menu 9 — Unit 3 (KUK 5.1): tulis seluruh data ke file CSV. */
+    private static void exportCsv() {
+        try {
+            String namaFile = minta("Nama file tujuan [data_mahasiswa.csv]");
+            if (namaFile.isBlank()) {
+                namaFile = "data_mahasiswa.csv";
+            }
+            int jumlah = CsvFileManager.eksporKeFile(service.semua(), namaFile);
+            System.out.println("Berhasil menulis " + jumlah + " data ke file: " + namaFile);
+        } catch (Exception e) {
+            System.out.println("Gagal export ke file: " + e.getMessage());
+        }
+    }
+
+    /** Menu 10 — Unit 3 (KUK 5.2): baca data dari file CSV lalu simpan ke database. */
+    private static void importCsv() {
+        try {
+            String namaFile = minta("Nama file sumber [data_mahasiswa.csv]");
+            if (namaFile.isBlank()) {
+                namaFile = "data_mahasiswa.csv";
+            }
+            List<Mahasiswa> dariFile = CsvFileManager.imporDariFile(namaFile);
+            int berhasil = 0;
+            int gagal = 0;
+            for (Mahasiswa m : dariFile) {
+                try {
+                    service.tambah(m);   // tetap lewat validasi + cek NIM unik
+                    berhasil++;
+                } catch (Exception e) {
+                    gagal++;             // mis. NIM duplikat / data tidak valid
+                }
+            }
+            System.out.printf("Import selesai: %d berhasil, %d dilewati (duplikat/invalid).%n",
+                    berhasil, gagal);
+        } catch (Exception e) {
+            System.out.println("Gagal import dari file: " + e.getMessage());
         }
     }
 

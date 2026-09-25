@@ -57,4 +57,68 @@ ID + data baru → Validasi → UPDATE             → Status berhasil/gagal
 
 ## 6. Use Case (ringkas)
 - **Aktor:** Admin.
-- **Use case:** Tambah Data, Lihat Data, Ubah Data, Hapus Data, Cari Data.
+- **Use case:** Tambah Data, Lihat Data, Ubah Data, Hapus Data, Cari Data, Urutkan, Export/Import File.
+
+## 7. Class Diagram (Unit 1 — KUK 2.2: diagram objek)
+Menggambarkan kelas, atribut, method, dan relasinya (inheritance, implements, dependency).
+```
+        <<abstract>>
+          Person
+   ─────────────────────
+   - nama : String
+   - email : String
+   ─────────────────────
+   + getRole() : String   <<abstract>>
+   + getNama() / setNama()
+   + getEmail() / setEmail()
+          ▲  (extends / inheritance)
+          │
+       Mahasiswa
+   ─────────────────────
+   - id : int
+   - nim : String
+   - jurusan : String
+   - ipk : double
+   ─────────────────────
+   + getRole() : String   (override → polymorphism)
+   + toRow() : String
+
+   <<interface>>
+   CrudRepository<T>
+   ─────────────────────
+   + insert(T)          + findById(int) : T
+   + findAll() : List   + update(T) : boolean
+   + delete(int) : boolean
+          ▲  (implements)
+          │
+     MahasiswaDAO ───uses──▶ DatabaseConnection
+          ▲
+          │ (dipakai)
+   MahasiswaService ───validasi──▶ InputValidator
+
+   App ──▶ MahasiswaService, NilaiDAO, CsvFileManager, MahasiswaSorter
+```
+
+## 8. Component Diagram (Unit 1 — KUK 2.2: diagram komponen)
+Menggambarkan komponen/lapisan sistem dan ketergantungan antar-komponennya.
+```
+┌─────────────────────────────────────────────────────────┐
+│                    App (UI / Menu Console)               │
+└───────────────┬───────────────────────┬─────────────────┘
+                │                        │
+        ┌───────▼────────┐      ┌────────▼─────────┐
+        │  Util          │      │  Service         │
+        │  - Validator   │◀─────│  (business logic)│
+        │  - CsvFile     │      │  - validasi      │
+        │  - Sorter      │      └────────┬─────────┘
+        └───────┬────────┘               │
+             (file .csv)         ┌────────▼─────────┐
+                                 │  DAO (CrudRepo)  │
+                                 │  Mahasiswa/Nilai │
+                                 └────────┬─────────┘
+                                          │ JDBC
+                                 ┌────────▼─────────┐
+                                 │  Database (SQLite)│
+                                 │  sqlite-jdbc lib  │
+                                 └──────────────────┘
+```
